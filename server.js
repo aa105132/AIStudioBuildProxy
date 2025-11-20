@@ -347,10 +347,20 @@ class ProxyServerSystem extends EventEmitter {
         const app = this._createExpressApp();
         this.httpServer = http.createServer(app);
 
-        return new Promise((resolve) => {
+        // Handle HTTP server errors
+        this.httpServer.on('error', (error) => {
+            this.logger.error(`HTTP Server Error: ${error.message}`);
+            this.emit('error', error);
+        });
+
+        return new Promise((resolve, reject) => {
             this.httpServer.listen(this.config.httpPort, this.config.host, () => {
                 this.logger.info(`HTTP服务器启动: http://${this.config.host}:${this.config.httpPort}`);
                 resolve();
+            });
+
+            this.httpServer.once('error', (error) => {
+                reject(error);
             });
         });
     }
@@ -379,6 +389,11 @@ class ProxyServerSystem extends EventEmitter {
             this.connectionRegistry.addConnection(ws, {
                 address: req.socket.remoteAddress
             });
+        });
+
+        this.wsServer.on('error', (error) => {
+            this.logger.error(`WebSocket Server Error: ${error.message}`);
+            this.emit('error', error);
         });
 
         this.logger.info(`WebSocket服务器启动: ws://${this.config.host}:${this.config.wsPort}`);
