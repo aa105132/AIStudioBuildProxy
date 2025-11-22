@@ -12,7 +12,7 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # 定义仓库地址
-REPO_URL="https://github.com/starowo/AIStudioBuildProxy.git"
+REPO_URL="https://github.com/aa105132/AIStudioBuildProxy.git"
 SERVER_BRANCH="server"
 CLIENT_BRANCH="client"
 
